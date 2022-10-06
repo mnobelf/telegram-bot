@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 import sqlite3
 import pandas as pd
 from difflib import get_close_matches
+import time
+import threading
 
 con = sqlite3.connect("qa.sqlite3")
 
@@ -41,13 +43,46 @@ bot = telebot.TeleBot(API_KEY)
 # def greet(message):
 #     bot.send_message(message.chat.id, "Hello!")
 
+last_messages = []
+waiting_time = 5
+
 @bot.message_handler(func=lambda m: True)
 def reply(message):
     q = get_close_matches(message.text,dataframe['question'])
     # print(q[0])
     ans = dataframe.loc[dataframe['question'] == q[0], 'answer'].iloc[0]
     # print(ans)
+    print(message)
     bot.send_message(message.chat.id,ans)
+
+    # check if there's no message.chat.username in connections[] then init to connections
+    found = False
+    for m in last_messages:
+        if m.chat.username == message.chat.username:
+            last_messages.remove(m)
+            last_messages.append(message)
+            found = True
+    
+    if not(found):
+        last_messages.append(message)
+
+
+#always check for all member of connections[], if message.date + 5 < time.now(), then send_message to the message and delete it from connections
+def idle_check_thread():
+    # global last_msg
+    # global waiting_time
+    while True:
+        current_time = time.time()
+        try:
+            for m in last_messages:
+                if (m.date + waiting_time) < current_time:
+                    bot.send_message(m.chat.id,"are you there?")
+                    last_messages.remove(m)
+        except:
+            pass
+
+x = threading.Thread(target=idle_check_thread)
+x.start()
 
 
 bot.polling()
