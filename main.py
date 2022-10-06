@@ -55,7 +55,7 @@ def reply(message):
     print(message)
     bot.send_message(message.chat.id,ans)
 
-    # check if there's no message.chat.username in connections[] then init to connections
+    # check if there's no {message.chat.username} in last_messages[] then append to last_messages[]
     found = False
     for m in last_messages:
         if m.chat.username == message.chat.username:
@@ -67,7 +67,7 @@ def reply(message):
         last_messages.append(message)
 
 
-#always check for all member of connections[], if message.date + 5 < time.now(), then send_message to the message and delete it from connections
+#always check for all member of last_messages[], if message.date + 5 < time.now(), then send_message to the message.chat.id and delete it from last_messages[]
 def idle_check_thread():
     # global last_msg
     # global waiting_time
