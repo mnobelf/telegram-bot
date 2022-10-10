@@ -50,10 +50,14 @@ waiting_time = 5
 def reply(message):
     q = get_close_matches(message.text,dataframe['question'])
     # print(q[0])
-    ans = dataframe.loc[dataframe['question'] == q[0], 'answer'].iloc[0]
-    # print(ans)
-    print(message)
-    bot.send_message(message.chat.id,ans)
+
+    if q:
+        ans = dataframe.loc[dataframe['question'] == q[0], 'answer'].iloc[0]
+        # print(ans)
+        print(message)
+        bot.send_message(message.chat.id,ans)
+    else:
+        bot.send_message(message.chat.id,"sorry, I don't understand what you're saying")
 
     # check if there's no {message.chat.username} in last_messages[] then append to last_messages[]
     found = False
