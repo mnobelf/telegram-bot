@@ -62,6 +62,7 @@ def reply(message):
             last_messages.remove(m)
             last_messages.append(message)
             found = True
+            break
     
     if not(found):
         last_messages.append(message)
