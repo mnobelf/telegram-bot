@@ -23,6 +23,8 @@ pip3 install -r requirements.txt
 python3 main.py
 ```
 
+3. Open https://t.me/deltaku_bot on telegram
+
 ## Testing the API
 The API uses package pyTelegramBotAPI as websocket technology to provide full-duplex communication.
 
